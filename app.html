@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audio Processing App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container mt-3">
+        <h2>Audio Processing App</h2>
+        <div class="form-group">
+            <label for="upload">Upload folder containing song and stems:</label>
+            <input type="file" id="upload" webkitdirectory mozdirectory directory multiple>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="folder-select">Select a folder:</label>
+            <select class="form-control" id="folder-select">
+            </select>
+        </div>
+
+<button id="load-folder" class="btn btn-primary mt-3">Load Folder</button>
+
+        <div class="form-group mt-3">
+            <label for="chunk-select">Select a chunk:</label>
+            <select class="form-control" id="chunk-select">
+            </select>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div id="raw-container">
+                    <h6>Raw waveform</h6>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="transformed-container">
+                    <h6>Transformed waveform</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="transform-select">Select a transformation:</label>
+            <select class="form-control" id="transform-select">
+                <option>None</option>
+                <option>FFT</option>
+                <option>STFT</option>
+                <option>MFCC</option>
+            </select>
+        </div>
+
+        <button id="train" class="btn btn-primary mt-3">Train</button>
+    </div>
+
+    <script>
+
+        $(document).ready(function() {
+        // Function to get chunks and populate selector
+            function get_chunks(song_id) {
+                $.ajax({
+                    type: "GET",
+                    url: `/song-chunks/${song_id}`,
+                    success: function(response) {
+                        chunks = response.chunks;
+                        $("#chunk-select").empty();
+                        chunks.forEach(function(chunk, idx) {
+                            $("#chunk-select").append(`<option value="${idx}">Chunk ${idx + 1}</option>`);
+                        });
+                    },
+                    error: function(err) {
+                        console.log("Error: ", err);
+                    }
+                });
+            }
+
+            // Display selected chunk and its transformation
+            $("#chunk-select").on("change", function() {
+                const chunk_idx = parseInt(this.value);
+                const current_chunk = chunks[chunk_idx];
+                const transform_type = $("#transform-select").val();
+
+                update_waveform("raw-container", current_chunk);
+                apply_transformation(current_chunk, transform_type, "transformed-container");
+            });
+
+            // Apply transformation to the selected chunk and display in the viewer
+            $("#transform-select").on("change", function() {
+                const chunk_idx = parseInt($("#chunk-select").val());
+                const current_chunk = chunks[chunk_idx];
+                const transform_type = this.value;
+
+                apply_transformation(current_chunk, transform_type, "transformed-container");
+            });
+
+            // Function to update waveform in a container
+            function update_waveform(container_id, data) {
+                const layout = { title: 'Waveform' };
+                const config = { responsive: true };
+                const trace = { x: Array.from(data.keys()), y: data, mode: 'lines' };
+
+                Plotly.newPlot(container_id, [trace], layout, config);
+            }
+
+            // Function to apply transformation and update waveform
+            function apply_transformation(chunk_waveform, transform_type, container_id) {
+                $.ajax({
+                    type: "POST",
+                    url: "/apply-transformation",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        chunk_waveform: chunk_waveform,
+                        transform_type: transform_type
+                    }),
+                    success: function(response) {
+                        const transformed_waveform = response.transformed_waveform;
+                        update_waveform(container_id, transformed_waveform);
+                    },
+                    error: function(err) {
+                        console.log("Error: ", err);
+                    }
+                });
+            }
+
+            // Train
+            $("#train").on("click", function() {
+                if (!song_id) {
+                    alert("Please upload a song and its stems first.");
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: `/train/${song_id}`,
+                    success: function(response) {
+                        alert("Model trained successfully!");
+                    },
+                    error: function(err) {
+                        console.log("Error: ", err);
+                    }
+                });
+            });
+
+
+            // Function to fetch and display uploaded folders
+            function load_folder_list() {
+                $.ajax({
+                    type: "GET",
+                    url: "/uploaded-folders",
+                    success: function(response) {
+                        response.forEach(function(folder) {
+                            $("#folder-select").append(`<option value="${folder.song_id}">${folder.song_name} (${folder.song_id})</option>`);
+                        });
+                    },
+                    error: function(err) {
+                        console.log("Error: ", err);
+                    }
+                });
+            }
+
+            // Load the folder list when the page loads
+            load_folder_list();
+
+            // Handle the Load Folder button click event
+            $("#load-folder").on("click", function() {
+                const song_id = $("#folder-select").val();
+                get_chunks(song_id);  // Assumes you have already implemented the get_chunks function
+            });
+        });
+</script>
+
+</body>
+</html>
