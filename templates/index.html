@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Audio Transform UI</title>
+        <!-- Plotly.js -->
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    </head>
+    <body>
+        <h1>Audio Transform UI</h1>
+
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="audio_file">
+            <input type="submit" value="Upload">
+        </form>
+
+        <h2>Transform</h2>
+        <button onclick="applyTransform('Original')">Original</button>
+        <button onclick="applyTransform('FFT')">FFT</button>
+        <button onclick="applyTransform('STFT')">STFT</button>
+        <button onclick="applyTransform('MFCC')">MFCC</button>
+
+        <h2>Visualization</h2>
+        <div id="visualization"></div>
+
+        <script>
+        function applyTransform(transform) {
+            // Send AJAX request to the server
+            fetch('/transform?transform=' + transform)
+            .then(response => response.json())
+            .then(data => {
+                // Create new Plotly plot
+                Plotly.newPlot('visualization', data);
+            });
+        }
+        </script>
+    </body>
+</html>
