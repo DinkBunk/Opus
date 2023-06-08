@@ -87,7 +87,7 @@ def get_uploaded_folders():
 
     folder_data = []
     for folder in folders:
-        song_dir = os.path.join(base_path, folder)
+        song_dir = os.path.jwoin(base_path, folder)
         if os.path.isdir(song_dir):
             song_name = os.path.basename(song_dir)
             song_id = folder
