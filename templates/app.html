@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,7 +13,7 @@
         <h2>Audio Processing App</h2>
         <div class="form-group">
             <label for="upload">Upload file containing song and stems:</label>
-            <input type="file" id="upload" webkitdirectory mozdirectory directory multiple>
+            <input type="file" id="upload" accept=".wav" multiple>
         </div>
 
         <div class="form-group mt-3">
@@ -64,28 +64,43 @@
 
     <script>
         $(document).ready(function() {
-            // Function to get chunks and populate selector
-            function get_chunks(song_id) {
+            // Function to handle file upload
+            $("#load-file").on("click", function() {
+                var files = $("#upload")[0].files;
+                if (files.length === 0) {
+                    alert("Please select at least one file.");
+                    return;
+                }
+
+                // Create FormData object
+                var formData = new FormData();
+
+                // Append selected files to FormData
+                for (var i = 0; i < files.length; i++) {
+                    formData.append("file", files[i]);
+                }
+
+                // Make AJAX request to upload the files
                 $.ajax({
                     type: "POST",
-                    url: `/song-chunks`,
-                    data: JSON.stringify({ song_id: song_id }),
-                    contentType: "application/json",
+                    url: "/upload-file",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
                     success: function(response) {
-                        chunks = response.chunks;
-                        $("#chunk-select").empty();
-                        chunks.forEach(function(chunk, idx) {
-                            $("#chunk-select").append(`<option value="${idx}">Chunk ${idx + 1}</option>`);
-                        });
+                        // Handle success response
+                        console.log("Files uploaded successfully!", response);
                     },
                     error: function(err) {
+                        // Handle error response
                         console.log("Error: ", err);
                     }
                 });
-            }
+            });
 
-            // Rest of the code remains the same...
         });
     </script>
+
+
 </body>
 </html>
