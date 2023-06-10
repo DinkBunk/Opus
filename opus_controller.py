@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, send_from_directory
+from flask import Flask, request, render_template, jsonify, make_response
 import uuid
 import os
 from werkzeug.utils import secure_filename
@@ -9,18 +9,29 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template("app.html")
 
 
-@app.route('/upload-file', methods=['POST'])
+@app.route('/upload', methods=['POST'])
 def upload_file():
     # if 'file' not in request.files:
     #     return "No file part", 400
     song_name = request.form.get("song_name", "unnamed")
-    file = request.files['file']
+    file = request.files['audio_file']
     song_data = save_uploaded_files(song_name, [file])
     return jsonify(song_data)
 
+
+@app.route('/dataset', methods=['GET'])
+def get_datasets():
+    files = []
+    for folder in os.listdir("dataset"):
+        for file in os.listdir(os.path.join("dataset", folder)):
+            if file.endswith(".wav"):
+                files.append(os.path.join(folder, file))
+    response = make_response(jsonify(files))
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 @app.route('/upload-folder', methods=['POST'])
 def upload_folder():
@@ -32,13 +43,12 @@ def upload_folder():
     song_data = save_uploaded_files(song_name, files)
     return jsonify(song_data)
 
-# Rest of the code remains the same...
 
 @app.route('/song-chunks', methods=['POST'])
 def get_chunks():
     song_id = request.json.get('song_id')
     song_path = os.path.join("dataset", song_id, song_id + ".wav")
-    chunked_waveforms = chunkify(song_path, 2000)
+      = chunkify(song_path, 2000)
     return jsonify({'chunks': chunked_waveforms})
 
 @app.route('/apply-transformation', methods=['POST'])
