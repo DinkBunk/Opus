@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Opus.iml" filepath="$PROJECT_DIR$/.idea/Opus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TermGPT/.idea/TermGPT.iml" filepath="$PROJECT_DIR$/TermGPT/.idea/TermGPT.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Terminal/.idea/Terminal.iml" filepath="$PROJECT_DIR$/../Terminal/.idea/Terminal.iml" />
     </modules>
   </component>
 </project>
