@@ -26,11 +26,17 @@ class StemDelegate:
             )
         self.db.commit()
 
-
     def search_by_artist_or_title(self, search_term):
         with self.db.cursor() as cursor:
             cursor.execute(
                 "SELECT * FROM stems WHERE artist ILIKE %s OR title ILIKE %s",
                 (search_term, search_term)
+            )
+            return cursor.fetchall()
+
+    def get_all_stems(self):
+        with self.db.cursor() as cursor:
+            cursor.execute(
+                "SELECT * FROM stems"
             )
             return cursor.fetchall()

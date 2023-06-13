@@ -1,31 +1,33 @@
 import uuid
 
 import psycopg2
-from werkzeug.utils import secure_filename
 from blob_delegate import BlobDelegate
 from stem_delegate import StemDelegate
 from mix_delegate import MixDelegate
+from database import session
+
 import tensor_tools as tt
 import os
 
-username = os.environ['GOOGLE_SQL_USER']
-password = os.environ['GOOGLE_SQL_PASS']
-
+username = os.environ.get('GOOGLE_DB_USER')
+password = os.environ.get('GOOGLE_DB_PASS')
+host = os.environ.get('GOOGLE_DB_HOST')
 
 
 class OpusService:
     def __init__(self):
 
-        db_conn = psycopg2.connect(host="opus-389622:us-central1:opus", database="opus-db", user=username, password=password)
+        db_conn = psycopg2.connect(host=host, database="opus-db", user=username,
+                                   password=password)
 
         # Create an instance of the BlobDelegate class
         self.blob_delegate = BlobDelegate("opus-training-data")
 
         # Create an instance of the MixDelegate class
-        self.mix_delegate = MixDelegate("your_postgres_db")
+        self.mix_delegate = MixDelegate(session)
 
         # Create an instance of the StemDelegate class
-        self.stem_delegate = StemDelegate("your_postgres_db")
+        self.stem_delegate = StemDelegate(session)
 
     def process_upload(self, file, metadata, is_stem):
         blob_id = str(uuid.uuid4())
@@ -41,9 +43,11 @@ class OpusService:
         stems = self.stem_delegate.search_by_artist_or_title(search_term)
         return mixes, stems
 
-    def get_stem_ids_for_mix(self, mix_id):
-        return self.mix_delegate.get_stems_for_mix(mix_id)
-
+    def get_stems_for_mix(self, mix_id):
+        ids = self.mix_delegate.get_stems_for_mix(mix_id)
+        stems = []
+        for id in ids:
+            stems.append(self.stem_delegate.get_stem(id))
     def get_stem_metadata(self, stem_id):
         return self.stem_delegate.get_stem(stem_id)
 
@@ -52,3 +56,6 @@ class OpusService:
 
     def get_audio_by_id(self, blob_id):
         return self.blob_delegate.get_blob(blob_id)
+
+    def get_all_stems(self):
+        return self.stem_delegate.get_all_stems()

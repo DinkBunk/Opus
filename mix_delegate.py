@@ -1,5 +1,6 @@
 import psycopg2
 
+
 class MixDelegate:
     def __init__(self, db):
         self.db = db
@@ -52,3 +53,10 @@ class MixDelegate:
                 (mix_id,)
             )
             return cursor.fetchone()
+
+    def get_all_mixes(self):
+        with self.db.cursor() as cursor:
+            cursor.execute(
+                "SELECT * FROM mixes"
+            )
+            return cursor.fetchall()

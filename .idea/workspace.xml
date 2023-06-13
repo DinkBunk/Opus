@@ -5,24 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bcb468a7-7396-4b31-aa8f-c9c5063c496d" name="Changes" comment="project structure">
-      <change afterPath="$PROJECT_DIR$/static/main.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/filestore.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TermGPT/TermGPT.py" beforeDir="false" afterPath="$PROJECT_DIR$/TermGPT/TermGPT.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/blob_delegate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/opus_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/opus_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/static/main.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/templates/app.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/app.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/77867253-f7f1-4480-b57b-3a5cb95c69f5/Eddie_Van_Halen_-_Hot_For_Teacher_-_Isolated_Guitar_Track_AWESOME.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/b979a9bd-cd8a-4d77-ab92-53a4fb47824d/Eddie_Van_Halen_-_Hot_For_Teacher_-_Isolated_Guitar_Track_AWESOME.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/ff7e0584-3b36-47a2-9b57-25f7ca6465c4/Eddie_Van_Halen_-_Hot_For_Teacher_-_Isolated_Guitar_Track_AWESOME.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/social_intervention/Social Intervention.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/delegate/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/mix_delegate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delegate/metadata_delegate.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/delegate/storage_delegate.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/stem_delegate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/opus_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/opus_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blob_delegate.py" beforeDir="false" afterPath="$PROJECT_DIR$/blob_delegate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mix_delegate.py" beforeDir="false" afterPath="$PROJECT_DIR$/mix_delegate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opus_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/opus_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opus_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/opus_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stem_delegate.py" beforeDir="false" afterPath="$PROJECT_DIR$/stem_delegate.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,7 +117,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686361685111</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="project structure">
+      <created>1686617255496</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1686617255496</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

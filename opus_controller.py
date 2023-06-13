@@ -2,7 +2,7 @@ import uuid
 from flask import Flask, request, render_template, jsonify, make_response
 from tensor_tools import chunkify
 from opus_service import OpusService
-from models.models import Session, Stem
+
 
 app = Flask(__name__)
 service = OpusService()
@@ -12,35 +12,45 @@ def index():
     return render_template("app.html")
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/stems', methods=['POST'])
 def upload_stem():
-    if 'file' not in request.files or 'metadata' not in request.json:
-        return jsonify({'error': 'Bad request'}), 400
-
     file = request.files['file']
-    metadata = request.json['metadata']
+    metadata = request.form
+    service.process_upload(file, metadata, True)
+    return jsonify({'message': 'success'}), 200
 
-    session = Session()
-
-    new_stem = Stem(stem_id=str(uuid.uuid4()), artist=metadata['artist'], title=metadata['title'], instrument=metadata['instrument'], mix_id=metadata['mix_id'], blob_id="Blob ID")
-    session.add(new_stem)
-    session.commit()
-
-    session.close()
-
-    return jsonify({'message': 'Stem uploaded successfully'}), 201
-
-@app.route('/mixes/<blob_id>', methods=['GET'])
-def get_song_data(blob_id):
-    song_data = service.get_song_data(blob_id)
+@app.route('/stems/<blob_id>', methods=['GET'])
+def get_stem_metadata(blob_id):
+    song_data = service.get_stem_metadata(blob_id)
     response = make_response(jsonify(song_data), 200)
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
-
 @app.route('/stems', methods=['GET'])
-def get_all_metadata():
-    song_data = service.get_all_metadata()
+def get_all_stems():
+    song_data = service.get_stem_metadata()
+    response = make_response(jsonify(song_data), 200)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+@app.route('/mixes', methods=['GET'])
+def get_all_mixes():
+    song_data = service.get()
+    response = make_response(jsonify(song_data), 200)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+@app.route('/mixes', methods=['POST'])
+def upload_mix():
+    file = request.files['file']
+    metadata = request.form
+    service.process_upload(file, metadata, False)
+    return jsonify({'message': 'success'}), 200
+
+
+@app.route('/mixes/<blob_id>', methods=['GET'])
+def get_mix_metadata(blob_id):
+    song_data = service.get_stem_metadata(blob_id)
     response = make_response(jsonify(song_data), 200)
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
@@ -51,11 +61,12 @@ def search_all():
     song_data = service.search_all_entries(search_term)
     return jsonify(song_data), 200
 
-@app.route('/chunkify/<blob_id>', methods=['GET'])
-def get_song_chunks(blob_id):
-    song_data = service.get_song_data(blob_id)
-    chunks = chunkify(song_data['blob_id'], 1000)
-    return jsonify(chunks), 200
+
+@app.route('/mixes/<mix_id>/stems', methods=['GET'])
+def get_stems_for_mix(mix_id):
+    stem_ids = service.get_stem_ids_for_mix(mix_id)
+    return jsonify(stem_ids), 200
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
