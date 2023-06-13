@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Opus</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Garamond, Calibri, sans-serif;
+            background-color: #1c1c1c;
+            color: #ffffff;
+        }
+        #folder-tree {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            border-left: 4px solid #ccc;
+            padding: 10px;
+        }
+        #folder-tree h2 {
+            margin-top: 0;
+        }
+        #waveform-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        #chunk-display {
+            width: 100%;
+            height: 100px;
+            overflow-x: auto;
+            white-space: nowrap;
+            margin-bottom: 20px;
+        }
+        #chunk-display div {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            border: 1px solid #000;
+            text-align: center;
+            line-height: 50px;
+            cursor: pointer;
+        }
+        .waveform {
+            flex: 1;
+            min-width: 400px;
+            max-width: 800px;
+            min-height: 300px;
+            max-height: 600px;
+            margin: 10px;
+            border: 4px solid #ccc;
+        }
+
+        .waveform-buttons {
+            display: flex;
+            justify-content: center;
+        }
+        button {
+            background-color: #333333;
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 0px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #555555;
+        }
+    </style>
+</head>
+<body>
+    <div id="folder-tree">
+        <h2>Dataset</h2>
+        <ul id="dataset-list">
+          <!-- Dataset list goes here -->
+        </ul>
+        <div id="upload-form">
+        <label for="file">Upload a song:</label>
+        <input type="file" id="file">
+        <label for="artist">Artist Name:</label>
+        <input type="text" id="artist">
+        <label for="title">Song Title:</label>
+        <input type="text" id="title">
+        <label for="instrument">Instrument Name:</label>
+        <input type="text" id="instrument">
+        <label for="mix_id">Mix ID:</label>
+        <input type="text" id="mix_id">
+        <button onclick="uploadSong()">Upload</button>
+    </div>
+    </div>
+    <div id="waveform-display">
+        <div class="waveform">
+          <!-- Left waveform goes here -->
+          <div class="waveform-buttons">
+              <button class="transform-button" data-transform="FFT">FFT</button>
+              <button class="transform-button" data-transform="MFCC">MFCC</button>
+              <button class="transform-button" data-transform="STFT">STFT</button>
+              <button class="transform-button" data-transform="IDENT">IDENT</button>
+          </div>
+        </div>
+        <button onclick="applyTransform('STFT')">Apply STFT</button>
+        <button onclick="applyTransform('MFCC')">Apply MFCC</button>
+        <button onclick="removeNoise()">Remove Noise</button>
+        <div class="waveform">
+          <!-- Right waveform goes here -->
+          <div class="waveform-buttons">
+              <button class="transform-button" data-transform="FFT">FFT</button>
+              <button class="transform-button" data-transform="MFCC">MFCC</button>
+              <button class="transform-button" data-transform="STFT">STFT</button>
+              <button class="transform-button" data-transform="IDENT">IDENT</button>
+          </div>
+        </div>
+        <button onclick="applyTransform('STFT')">Apply STFT</button>
+        <button onclick="applyTransform('MFCC')">Apply MFCC</button>
+        <button onclick="removeNoise()">Remove Noise</button>
+    </div>
+    <div id="chunk-display">
+        <!-- Chunks will be displayed here -->
+    </div>
+
+    <button onclick="applyTransform('STFT')">Apply STFT</button>
+    <button onclick="applyTransform('MFCC')">Apply MFCC</button>
+    <button onclick="removeNoise()">Remove Noise</button>
+<script src="static/main.js"></script>
+
+</body>
+</html>
