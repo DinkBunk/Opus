@@ -31,16 +31,16 @@ function selectSong(event) {
         });
 }
 
-function uploadSong() {
-    const fileInput = document.getElementById('file');
+function uploadStem() {
+    const fileInput = document.getElementById('stem-file');
     const file = fileInput.files[0];
     if (!file) {
         alert('Please select a file to upload');
         return;
     }
-    const artistInput = document.getElementById('artist');
-    const titleInput = document.getElementById('title');
-    const instrumentInput = document.getElementById('instrument');
+    const artistInput = document.getElementById('stem-artist');
+    const titleInput = document.getElementById('stem-title');
+    const instrumentInput = document.getElementById('stem-instrument');
     const mixIdInput = document.getElementById('mix_id');
     const formData = new FormData();
     formData.append('file', file);
@@ -83,6 +83,62 @@ function applyTransform(transformName) {
             // Display the transformed chunk waveform
         });
 }
+
+function search(keyword) {
+    fetch(`/search?keyword=${keyword}`)
+        .then(response => response.json())
+        .then(searchResults => {
+            // Process the search results
+            displaySearchResults(searchResults);
+        })
+        .catch(error => {
+            console.error('Error searching:', error);
+        });
+}
+
+function displaySearchResults(searchResults) {
+    const mixesContainer = document.getElementById('mixes-container');
+    mixesContainer.innerHTML = ''; // Clear previous mix items
+
+    searchResults.forEach(result => {
+        const mixItem = document.createElement('div');
+        mixItem.classList.add('mix-item');
+        mixItem.dataset.itemId = result.id;
+        mixItem.textContent = result.name;
+
+        mixesContainer.appendChild(mixItem);
+    });
+}
+
+function getWavFile(itemId) {
+    fetch(`/get/${itemId}`)
+        .then(response => response.blob())
+        .then(wavBlob => {
+            // Process the WAV blob
+            displayWaveform(wavBlob);
+        })
+        .catch(error => {
+            console.error('Error getting WAV file:', error);
+        });
+}
+
+const mixesContainer = document.getElementById('mixes-container');
+
+mixesContainer.addEventListener('dblclick', event => {
+    const item = event.target;
+    if (item.classList.contains('mix-item')) {
+        const itemId = item.dataset.itemId;
+        getWavFile(itemId);
+    }
+});
+
+mixesContainer.addEventListener('dblclick', event => {
+    const item = event.target;
+    if (item.classList.contains('mix-item')) {
+        const itemId = item.dataset.itemId;
+        getWavFile(itemId);
+    }
+});
 
 // Remove noise
 function removeNoise() {

@@ -4,92 +4,124 @@
     <title>Opus</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            font-family: Garamond, Calibri, sans-serif;
-            background-color: #1c1c1c;
-            color: #ffffff;
+            background-color: #2B2B2B;
+            color: #ADD8E6; /* Light blue color for the text */
+            font-family: 'Garamond', monospace;
+            padding: 20px;
         }
-        #folder-tree {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 300px;
-            height: 100%;
-            border-left: 4px solid #ccc;
-            padding: 10px;
-        }
-        #folder-tree h2 {
-            margin-top: 0;
-        }
-        #waveform-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        #chunk-display {
-            width: 100%;
-            height: 100px;
-            overflow-x: auto;
-            white-space: nowrap;
+
+        #mixes-container, #stems-container {
+            background: linear-gradient(90deg, #333, #444); /* Gradient background */
+            border: 1px solid #ADD8E6;
+            padding: 20px;
             margin-bottom: 20px;
+            border-radius: 5px; /* Smoother edges */
         }
-        #chunk-display div {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            margin-right: 10px;
-            border: 1px solid #000;
-            text-align: center;
-            line-height: 50px;
+
+        #dataset-list, #stems-list {
+            list-style: none;
+        }
+
+        #mix-upload-form, #stem-upload-form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="file"], input[type="text"] {
+            background-color: #333;
+            color: #ADD8E6;
+            border: 1px solid #ADD8E6;
+            padding: 5px;
+            width: 10%;
+            height: 30px; /* Smaller text fields */
+        }
+
+        button {
+            background-color: #ADD8E6;
+            color: #2B2B2B;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
             cursor: pointer;
+            border-radius: 5px; /* Smoother edges */
         }
+
+        button:hover {
+            background-color: #87CEEB; /* Lighter blue on hover */
+        }
+
+        #waveform-display {
+            background: linear-gradient(90deg, #333, #444); /* Gradient background */
+            border: 1px solid #ADD8E6;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px; /* Smoother edges */
+        }
+
         .waveform {
-            flex: 1;
-            min-width: 400px;
-            max-width: 800px;
-            min-height: 300px;
-            max-height: 600px;
-            margin: 10px;
-            border: 4px solid #ccc;
+            height: 200px;
+            background-color: #333;
+            margin-bottom: 20px;
+            position: relative;
+            border-radius: 5px; /* Smoother edges */
         }
 
         .waveform-buttons {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
             display: flex;
-            justify-content: center;
+            justify-content: space-around;
         }
-        button {
-            background-color: #333333;
-            color: #ffffff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 0px;
-            cursor: pointer;
-            font-size: 16px;
+
+        #chunk-display {
+            background: linear-gradient(90deg, #333, #444); /* Gradient background */
+            border: 1px solid #ADD8E6;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px; /* Smoother edges */
         }
-        button:hover {
-            background-color: #555555;
-        }
+
+
+
     </style>
 </head>
 <body>
-    <div id="folder-tree">
-        <h2>Dataset</h2>
+    <div id="mixes-container">
         <ul id="dataset-list">
           <!-- Dataset list goes here -->
         </ul>
-        <div id="upload-form">
-        <label for="file">Upload a song:</label>
-        <input type="file" id="file">
-        <label for="artist">Artist Name:</label>
-        <input type="text" id="artist">
-        <label for="title">Song Title:</label>
-        <input type="text" id="title">
-        <label for="instrument">Instrument Name:</label>
-        <input type="text" id="instrument">
-        <label for="mix_id">Mix ID:</label>
-        <input type="text" id="mix_id">
+        <div id="mix-upload-form">
+        <label for="mix-file">Upload mix:</label>
+        <input type="file" id="mix-file">
+        <label for="mix-artist">Artist Name:</label>
+        <input type="text" id="mix-artist">
+        <label for="mix-title">Song Title:</label>
+        <input type="text" id="mix-title">
+
         <button onclick="uploadSong()">Upload</button>
+            </div>
+    </div>
+        <div id="stems-container">
+        <ul id="stems-list">
+          <!-- Dataset list goes here -->
+        </ul>
+        <div id="stem-upload-form">
+        <label for="stem-file">Upload Stem:</label>
+        <input type="file" id="stem-file">
+        <label for="stem-artist">Artist Name:</label>
+        <input type="text" id="stem-artist">
+        <label for="stem-title">Song Title:</label>
+        <input type="text" id="stem-title">
+        <label for="stem-instrument">Instrument Name:</label>
+        <input type="text" id="stem-instrument">
+        <label for="parent-mix-id">Mix ID:</label>
+        <input type="text" id="parent-mix-id">
+        <button onclick="uploadStem()">Upload</button>
     </div>
     </div>
     <div id="waveform-display">

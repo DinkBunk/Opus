@@ -10,11 +10,12 @@ from torchaudio.transforms import MFCC, Spectrogram
 default_sample_rate = 44100  # default sample rate for most audio
 
 
-def chunkify(path: str, chunk_length_ms=2000):
+def chunkify(path, chunk_length_ms=2000):
     # Load wav file and return it as a list of tensors
     audio_segment = AudioSegment.from_wav(path)
     chunks = make_chunks(audio_segment, chunk_length_ms)
-    return [audiosegment_to_tensor(chunk) for chunk in chunks]
+    whole = audiosegment_to_tensor(audio_segment)
+    return whole, [audiosegment_to_tensor(chunk) for chunk in chunks]
 
 
 def audiosegment_to_tensor(audio_segment):

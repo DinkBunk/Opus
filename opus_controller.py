@@ -1,3 +1,4 @@
+import tensor_tools as tt
 import uuid
 from flask import Flask, request, render_template, jsonify, make_response
 from tensor_tools import chunkify
@@ -35,7 +36,7 @@ def get_all_stems():
 
 @app.route('/mixes', methods=['GET'])
 def get_all_mixes():
-    song_data = service.get()
+    song_data = service.get_all_mixes()
     response = make_response(jsonify(song_data), 200)
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
@@ -45,6 +46,7 @@ def upload_mix():
     file = request.files['file']
     metadata = request.form
     service.process_upload(file, metadata, False)
+
     return jsonify({'message': 'success'}), 200
 
 
@@ -59,13 +61,26 @@ def get_mix_metadata(blob_id):
 def search_all():
     search_term = request.args.get('q')
     song_data = service.search_all_entries(search_term)
-    return jsonify(song_data), 200
+    response = make_response(jsonify(song_data), 200)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 
 @app.route('/mixes/<mix_id>/stems', methods=['GET'])
 def get_stems_for_mix(mix_id):
-    stem_ids = service.get_stem_ids_for_mix(mix_id)
-    return jsonify(stem_ids), 200
+    stem_ids = service.get_stems_for_mix(mix_id)
+    stems = [service.get_stem_metadata(stem_id) for stem_id in stem_ids]
+    response = make_response(jsonify(stems), 200)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+
+def transform_waveform(waveform, sample_rate, transform_type, transform_params):
+    return tt.transform_waveform(waveform, sample_rate)
+
+
+def get_waveform(blob_id, filename):
+    return service.get_waveform(blob_id, filename)
 
 
 if __name__ == "__main__":
